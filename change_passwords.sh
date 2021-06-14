@@ -7,7 +7,7 @@
 #   Style Guide: https://github.com/bahamas10/bash-style-guide
 #######################################################################################################################
 
-###############################################-----LICENSE-----####################################################
+###############################################-----LICENSE-----#######################################################
 #   BSD 3-Clause License
 
 #   Copyright (c) 2021, Joel Goehring
@@ -76,8 +76,8 @@ local base=${0##*/}
 local base=${base/\./\\\.}
 # Print parameters and general info.
 echo -e "\n
-Takes the password on stdin and will prompt for it if one is not provided.
-The propmpt will not echo the password back.
+Takes the password on stdin and will prompt for it if one is not provided
+The propmpt will not echo the password back
 -a/--all:\t\tSpecifies that all passwords will be changed
 -h/--host:\t\tSpecifies changing the root user's password on the host
 -c/--cvm:\t\tSpecifies changing the nutanix user's password on the CVM
@@ -243,7 +243,7 @@ function set_ipmi_password () {
 }
 ###############################################-----END-FUNCTIONS-----#################################################
 
-# Print usage function if there are no parameters
+# Print usage function if there are no parameters.
 if (($# == 0)); then
     usage
     exit 1
@@ -307,7 +307,7 @@ if [[  $set_host_password == 'true' || $set_ipmi_password == 'true' ]]; then
         # Hostips returns a space seperated list of all hosts in the cluster which is read and stored as an array.
         read -ra hosts <<< "$(hostips)"
     elif [[ $nodes ]]; then
-        # Read in the specified nodes and store them as an array. Prefer comma seperated list but added pipe as well
+        # Read in the specified nodes and store them as an array. Prefer comma seperated list but added pipe as well.
         IFS=',|' read -r -a hosts <<< "$nodes"
         log 'info' 'Setting nodes to hosts'
     else
@@ -329,12 +329,12 @@ if [[ $set_cvm_password == 'true' ]]; then
     set_cvm_password
 fi
 
-# Set the 'admin' user's password in Prism Element
+# Set the 'admin' user's password in Prism Element.
 if [[ $set_prism_element_password == 'true' ]]; then
     set_prism_element_password
 fi
 
-# Set the 'ADMIN' user's password on all specified IPMI instances 
+# Set the 'ADMIN' user's password on all specified IPMI instances.
 if [[ $set_ipmi_password == 'true' ]]; then
     for host in "${hosts[@]}"
     do
