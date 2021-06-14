@@ -40,13 +40,13 @@
 #######################################################################################################################
 
 ###############################################-----PARAMETERS-----####################################################                                             
-#   -a/--all:                   Specifies that all passwords will be changed                                                   
-#   -h/--host:                  Specifies changing the root user's password on the host                                        
-#   -c/--cvm:                   Specifies changing the nutanix user on the CVM                                                 
-#   -e/--prism_element:         Specifies changing the admin user in Prism Elemet                                              
-#   -i/--ipmi:                    Specifies changing the ADMIN user in the IPMI                                                  
+#   -a/--all:                   Specifies that all passwords will be changed
+#   -h/--host:                  Specifies changing the root user's password on the host
+#   -c/--cvm:                   Specifies changing the nutanix user on the CVM
+#   -e/--prism_element:         Specifies changing the admin user in Prism Elemet
+#   -i/--ipmi:                    Specifies changing the ADMIN user in the IPMI
 #   -r/--cluster:               If this flag exists the script will be run against the entire cluster
-#   -n/--nodes:                 Comma separated list of CVM or host IPs to run against                                         
+#   -n/--nodes:                 Comma separated list of CVM or host IPs to run against
 #######################################################################################################################
 
 ###############################################-----Exit-Codes-----####################################################
@@ -241,8 +241,9 @@ function set_ipmi_password () {
         exit 9
     fi
 }
-###############################################-----END-FUNCTIONS-----#################################################
+#######################################################################################################################
 
+###############################################-----BODY-----##########################################################
 # Print usage function if there are no parameters.
 if (($# == 0)); then
     usage
@@ -300,7 +301,6 @@ fi
 # Read password from stdin or prompt for password. Will not echo password back from prompt. 
 read -rsp 'Password: ' password; echo -e '\n'
 
-###############################################-----BODY-----##########################################################
 # A list of remote hosts is only necessary when setting the host and IPMI passwords.
 if [[  $set_host_password == 'true' || $set_ipmi_password == 'true' ]]; then
     if [[ $cluster == 'true' ]]; then
