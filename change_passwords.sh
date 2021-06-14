@@ -85,7 +85,7 @@ The propmpt will not echo the password back.
 -i/--ipmi:\t\tSpecifies changing the ADMIN user's password in the IPMI
 -r/--cluster:\t\tRun against the entire cluster
 -n/--nodes:\t\tComma separated list of virtualization host IPs\n
-**You can check the logs by issuing the below command after running the script:
+**The logs can be viewed by issuing the below command:
 sudo egrep -o '$base:.+' /home/log/user_info
 
 The password must meet the following complexity requirements:
