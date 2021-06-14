@@ -302,10 +302,8 @@ with a comma seperated list of nodes when using the -h or -i flags\n'
     exit 1
 fi
 
-# Test if password parameter was populated.
-if [[ -z $password ]]; then
-    read -rsp 'Password: ' password; echo -e '\n'
-fi
+# Read password from stdin or prompt for password. Will not echo password back from prompt. 
+read -rsp 'Password: ' password; echo -e '\n'
 
 ###############################################-----BODY-----##########################################################
 # A list of remote hosts is only necessary when setting the host and IPMI passwords.
