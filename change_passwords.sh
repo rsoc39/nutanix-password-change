@@ -73,7 +73,7 @@ function usage {
 # Gets the file name of the script using parameter expansion instead of calling out to external programs.
 local base=${0##*/}
 # Inserts a backslash to escape the dot for a valid regex when printed below.
-local base=${base/\./\\\.}
+local base=${base//\./\\\.}
 # Print parameters and general info.
 echo -e "\n
 Takes the password on stdin and will prompt for it if one is not provided
