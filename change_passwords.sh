@@ -39,8 +39,7 @@
 #   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #######################################################################################################################
 
-###############################################-----PARAMETERS-----####################################################
-#   -p/--password:              password; Must be a string                                                
+###############################################-----PARAMETERS-----####################################################                                             
 #   -a/--all:                   Specifies that all passwords will be changed                                                   
 #   -h/--host:                  Specifies changing the root user's password on the host                                        
 #   -c/--cvm:                   Specifies changing the nutanix user on the CVM                                                 
@@ -257,10 +256,6 @@ log 'info' "Params: $*"
 while (($# != 0))
 do
     case "$1" in
-        # matches the password parameter and stores the next parameter as the password. Uses 'shift' to remove the
-        # second param so that it is not matched on the next iteration.
-        -p | --password) password=$2; shift ;;
-        #-s | --secret_password) read -sp 'Password: ' password; echo -e '\n' ;;
         # If the all parameter is specified, set individual functions to true.
         -a | --all)
             set_host_password='true'
