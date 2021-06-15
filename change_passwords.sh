@@ -274,7 +274,7 @@ do
                 nodes=$2
                 shift
             else 
-                echo '--nodes cannot be empty'
+                log 'error' '--nodes cannot be empty'
                 exit 1
             fi ;;
         -r | --cluster) cluster='true' ;;
@@ -287,14 +287,13 @@ done
 
 # Test if --nodes and --cluster have been set at the same time.
 if [[ $nodes ]] && [[ $cluster ]]; then
-    echo -e '\nYou cannot specify a node selction at the same time as the --cluster flag\n'
+    log 'error' 'A node selction cannot be specified at the same time as the --cluster flag'
     exit 1
 fi
 
 # Test if --nodes and --cluster are both empty.
 if [[ ( -z $nodes && -z $cluster ) && ( $set_host_password == 'true' || $set_ipmi_password == 'true' ) ]]; then
-    echo -e '\nYou must specify either the --cluster flag or the --nodes flag
-with a comma seperated list of nodes when using the -h or -i flags\n'
+    log 'error' 'Specify either the --cluster flag or the --nodes flag with a comma seperated list of nodes'
     exit 1
 fi
 
@@ -311,7 +310,7 @@ if [[  $set_host_password == 'true' || $set_ipmi_password == 'true' ]]; then
         IFS=',|' read -r -a hosts <<< "$nodes"
         log 'info' 'Setting nodes to hosts'
     else
-        echo 'Error: Unable to determine nodes'
+        log 'error' 'Unable to determine nodes'
         exit 7
     fi
 fi
