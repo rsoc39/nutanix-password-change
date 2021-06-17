@@ -3,7 +3,7 @@
 ###############################################-----HEADER-----########################################################
 #   Authors: Joel Goehring and Joseph Blake
 #   Date modifed: 6/14/2021
-#   version: 0.9
+#   version: 1.0
 #   Style Guide: https://github.com/bahamas10/bash-style-guide
 #######################################################################################################################
 
@@ -104,6 +104,7 @@ Must not have more than 2 consecutive occurrences of a character\n"
 # /home/log/messages in /etc/rsyslog.conf and directed to /home/log/user_info.
 # This function expects two parameters. The first being a string 'info' or 'error' which is used to set the level and
 # as a field in the line being logged. The second is the message being logged. 
+# Error messages will also print to stderr
 function log () {
     # Get's the name of this script running to be used as a field in the log.
     source=${0##*/}
@@ -247,6 +248,7 @@ function set_ipmi_password () {
 # Print usage function if there are no parameters.
 if (($# == 0)); then
     usage
+    log 'info' '0 parameters were specified. Printing usage information'
     exit 1
 fi
 
