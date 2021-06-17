@@ -29,3 +29,28 @@ At least one special character
 At least four characters differ from the old password  
 Must not be among the last 5 passwords  
 Must not have more than 2 consecutive occurrences of a character
+
+## Download and Run
+```bash
+cd ~/tmp
+```
+```bash
+wget https://raw.githubusercontent.com/rsoc39/nutanix-change-password/main/change_passwords.sh
+```
+```bash
+bash ./change_passwords.sh
+```
+
+## Example Usage
+```bash
+bash ./change_passwords.sh -r -a
+```
+```bash
+bash ./change_passwords.sh -c
+```
+```bash
+bash ./change_passwords.sh -n 192.168.5.10,192.168.5.11,192.168.5.12 -h
+```
+```bash
+echo 'mypassword' | bash ./change_passwords.sh -r -a
+```
