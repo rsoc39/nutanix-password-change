@@ -3,7 +3,7 @@
 Takes the password on stdin and will prompt for it if one is not provided.  
 The propmpt will not echo the password back.  
 
-### Parameters:  
+### Parameters
 -a/--all:\t\tSpecifies that all passwords will be changed  
 -h/--host:\t\tSpecifies changing the root user's password on the host  
 -c/--cvm:\t\tSpecifies changing the nutanix user's password on the CVM  
