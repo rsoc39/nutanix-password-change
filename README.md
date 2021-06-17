@@ -4,7 +4,7 @@ Takes the password on stdin and will prompt for it if one is not provided.
 The propmpt will not echo the password back.  
 
 ### Parameters
--a/--all:           Specifies that all passwords will be changed  
+-a/--all:            Specifies that all passwords will be changed  
 -h/--host:          Specifies changing the root user's password on the host  
 -c/--cvm:           Specifies changing the nutanix user's password on the CVM  
 -e/--prism_element: Specifies changing the admin user's password in Prism Elemet  
