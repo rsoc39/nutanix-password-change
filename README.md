@@ -1,4 +1,4 @@
-# nutanix-change-password
+# Nutanix Password Change
 
 Takes the password on stdin and will prompt for it if one is not provided.
 The propmpt will not echo the password back.
@@ -12,7 +12,8 @@ Parameters:
 -r/--cluster:\t\tRun against the entire cluster
 -n/--nodes:\t\tComma separated list of virtualization host IPs
 
-Logs are located in /home/log/user_info
+Logs are located in /home/log/messages on AOS 5.19 and below
+Logs are located in /home/log/user_info on AOS 5.20 and above
 
 The password must meet the following complexity requirements:
 At least eight characters long
