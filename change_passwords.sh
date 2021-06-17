@@ -43,7 +43,7 @@
 #   -h/--host:                  Specifies changing the root user's password on the host
 #   -c/--cvm:                   Specifies changing the nutanix user on the CVM
 #   -e/--prism_element:         Specifies changing the admin user in Prism Elemet
-#   -i/--ipmi:                    Specifies changing the ADMIN user in the IPMI
+#   -i/--ipmi:                  Specifies changing the ADMIN user in the IPMI
 #   -r/--cluster:               If this flag exists the script will be run against the entire cluster
 #   -n/--nodes:                 Comma separated list of CVM or host IPs to run against
 #######################################################################################################################
