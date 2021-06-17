@@ -49,8 +49,11 @@ bash ./change_passwords.sh -r -a
 bash ./change_passwords.sh -c
 ```
 ```bash
-bash ./change_passwords.sh -n 192.168.5.10,192.168.5.11,192.168.5.12 -h
+bash ./change_passwords.sh --prism_element
 ```
 ```bash
-echo 'mypassword' | bash ./change_passwords.sh -r -a
+bash ./change_passwords.sh --nodes 192.168.5.10,192.168.5.11,192.168.5.12 -h
+```
+```bash
+echo 'mypassword' | bash ./change_passwords.sh -r -i
 ```
