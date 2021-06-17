@@ -1,6 +1,6 @@
 # Nutanix Password Change
 
-Takes the password on stdin and will prompt for it if one is not provided. The propmpt will not echo the password.  
+Takes the password on stdin and will prompt for it if one is not provided. The prompt will not echo the password.  
 
 ## Parameters
 ```
