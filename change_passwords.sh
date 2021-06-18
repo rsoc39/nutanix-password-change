@@ -55,6 +55,7 @@
 #   9:      IPMI user 'ADMIN' password change failed
 #   8:      OS Designation for changing IPMI 'ADMIN' user password was not matched
 #   7:      List of hosts could not be determined
+#   5:      The new password and the verification password does not match
 #   1:      Parameters were specified incorrectly
 #######################################################################################################################
 
@@ -299,7 +300,12 @@ if [[ ( -z $nodes && -z $cluster ) && ( $set_host_password == 'true' || $set_ipm
 fi
 
 # Read password from stdin or prompt for password. Will not echo password back from prompt. 
-read -rsp 'Password: ' password; echo -e '\n'
+read -rsp 'Enter New Password: ' password
+read -rsp 'Verify New Password: ' vpassword; echo -e '\n'
+if [[ "$password" != "$vpassword" ]]; then
+    log 'error' 'The new and verification passwords do not match. Exiting.'
+    exit 5
+fi
 
 # A list of remote hosts is only necessary when setting the host and IPMI passwords.
 if [[  $set_host_password == 'true' || $set_ipmi_password == 'true' ]]; then
