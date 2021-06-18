@@ -300,7 +300,7 @@ if [[ ( -z $nodes && -z $cluster ) && ( $set_host_password == 'true' || $set_ipm
 fi
 
 # Read password from stdin or prompt for password. Will not echo password back from prompt. 
-read -rsp 'Enter New Password: ' password; echo -e '\n'
+read -rsp 'Enter New Password: ' password
 read -rsp 'Verify New Password: ' vpassword; echo -e '\n'
 if [[ "$password" != "$vpassword" ]]; then
     log 'error' 'The new and verification passwords do not match. Exiting.'
