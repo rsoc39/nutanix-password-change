@@ -5,7 +5,8 @@ Takes the password on stdin and will prompt for it if one is not provided. The p
 ## Parameters
 ```
 -a/--all:           Specifies that all passwords will be changed  
--h/--host:          Specifies changing the root user's password on the host  
+-h/--host:          Specifies changing the root user's password on the host
+-u/--nutanix:       Specifies changing the nutanix user's password on an AHV host
 -c/--cvm:           Specifies changing the nutanix user's password on the CVM  
 -e/--prism_element: Specifies changing the admin user's password in Prism Elemet  
 -i/--ipmi:          Specifies changing the ADMIN user's password in the IPMI  
