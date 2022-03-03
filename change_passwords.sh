@@ -347,7 +347,10 @@ if [[ $nodes ]] && [[ $cluster ]]; then
 fi
 
 # Test if --nodes and --cluster are both empty.
-if [[ ( -z $nodes && -z $cluster ) && ( $set_host_root_password == 'true' || $set_ipmi_password == 'true' || $set_host_nutanix_password == 'true' ) ]]; then
+if [[ ( -z $nodes && -z $cluster ) &&
+    ( $set_host_root_password == 'true' ||
+    $set_ipmi_password == 'true' ||
+    $set_host_nutanix_password == 'true' ) ]]; then
     log 'error' 'Specify either the --cluster flag or the --nodes flag with a comma seperated list of nodes'
     exit 1
 fi
@@ -361,7 +364,9 @@ if [[ "$password" != "$vpassword" ]]; then
 fi
 
 # A list of remote hosts is only necessary when setting the host, nutanix, and IPMI passwords.
-if [[  $set_host_root_password == 'true' || $set_ipmi_password == 'true' || $set_host_nutanix_password == 'true' ]]; then
+if [[  $set_host_root_password == 'true' ||
+    $set_ipmi_password == 'true' ||
+    $set_host_nutanix_password == 'true' ]]; then
     if [[ $cluster == 'true' ]]; then
         # Hostips returns a space seperated list of all hosts in the cluster which is read and stored as an array.
         read -ra hosts <<< "$(hostips)"
