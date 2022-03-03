@@ -2,8 +2,12 @@
 
 ###############################################-----HEADER-----########################################################
 #   Authors: Joel Goehring and Joseph Blake
-#   version: 1.0
+#   version: 1.1
 #   Style Guide: https://github.com/bahamas10/bash-style-guide
+#######################################################################################################################
+
+#############################################-----change-Log-----######################################################
+#   Added option to change nutanix user on AHV hosts
 #######################################################################################################################
 
 ###############################################-----LICENSE-----#######################################################
@@ -41,6 +45,7 @@
 ###############################################-----PARAMETERS-----####################################################                                             
 #   -a/--all:                   Specifies that all passwords will be changed
 #   -h/--host:                  Specifies changing the root user's password on the host
+#   -u/--nutanix:               Specifies changing the root user's password on the host
 #   -c/--cvm:                   Specifies changing the nutanix user on the CVM
 #   -e/--prism_element:         Specifies changing the admin user in Prism Elemet
 #   -i/--ipmi:                  Specifies changing the ADMIN user in the IPMI
@@ -49,6 +54,7 @@
 #######################################################################################################################
 
 ###############################################-----Exit-Codes-----####################################################
+#   13:     AHV host 'nutanix' user password change failed
 #   12:     Virtualization host 'root' user password change failed
 #   11:     CVM user 'nutanix' password change failed
 #   10:     Prism Element user 'admin' password change failed
@@ -80,6 +86,7 @@ Takes the password on stdin and will prompt for it if one is not provided
 The propmpt will not echo the password back
 -a/--all:\t\tSpecifies that all passwords will be changed
 -h/--host:\t\tSpecifies changing the root user's password on the host
+-u/--nutanix:\t\tSpecifies changing the nutanix user's password on the host
 -c/--cvm:\t\tSpecifies changing the nutanix user's password on the CVM
 -e/--prism_element:\tSpecifies changing the admin user's password in Prism Elemet
 -i/--ipmi:\t\tSpecifies changing the ADMIN user's password in the IPMI
@@ -117,28 +124,84 @@ function log () {
     fi
 }
 
+function host_os_discovery () {
+    log 'info' "--Beginning ${FUNCNAME[0]} function"
+    log 'info' "Host: $host"
+    # Get the OS designation of the host. This is necessary because ipmitool is called differently in ESXi and AHV.
+    # OS designation returned should be either "ESXi" or "GNU/Linux".
+    local host_os=$(
+        ssh ${ssh_opts} root@$host 'uname -o'
+    )
+    # Get the exit code of the above command.
+    local host_os_exit=$(
+        ssh ${ssh_opts} root@$host "echo $?"
+    )
+    log 'info' "host_os_exit:$host_os_exit"
+    # If OS equals "GNU/Linux" then set os to "AHV" for simplicity .
+    if [[ $host_os == 'GNU/Linux' ]]; then
+        local host_os='AHV'
+    fi
+    log 'info' "host_os:$host_os"
+    log 'info' "Ending ${FUNCNAME[0]} function"
+    echo $host_os
+}
+
 # This function uses the passwd command to change the 'root' user's passwsord on the host stored in the $host variable
 # when it is called. This function expects no parameters.
-function set_host_password () {
-    log 'info' "Host:$host"
+function set_host_root_password () {
+    log 'info' "--Beginning ${FUNCNAME[0]} function"
+    log 'info' "Host: $host"
     # No output is stored from this SSH session in order to keep it silent.
     # Echo passes the new password to the passwd command changing the password for the 'root' user.
     ssh ${ssh_opts} root@$host "echo -e '$password\n$password' | passwd root > /dev/null 2>&1"
     # Get the exit code of the above command.
-    local set_host_password_exit=$(
+    local set_host_root_password_exit=$(
         ssh ${ssh_opts} root@$host "echo $?"
     )
-    log 'info' "set_host_password_exit:$set_host_password_exit"
+    log 'info' "set_host_root_password_exit:$set_host_root_password_exit"
     # Check the exit code to determine if the password change succeeded or failed.
-    if ((set_host_password_exit == 0)); then
+    if ((set_host_root_password_exit == 0)); then
         local success="Host user 'root' password change on $host SUCCEEDED"
         echo "$success"
         log 'info' "$success"
         log 'info' "Ending ${FUNCNAME[0]} function"
-        return $set_host_password_exit
+        return $set_host_root_password_exit
     else
         log 'error' "Host user 'root' password change on $host FAILED"
         exit 12
+    fi
+}
+
+function set_host_nutanix_password () {
+    log 'info' "--Beginning ${FUNCNAME[0]} function"
+    log 'info' "Host: $host"
+    local host_os=$(host_os_discovery)
+    log 'info' "Host OS: $host_os"
+    # No output is stored from this SSH session in order to keep it silent.
+    # Echo passes the new password to the passwd command changing the password for the 'root' user.
+    if [[ $host_os == 'AHV' ]]; then
+        log 'info' "setting nutanix user password"
+        ssh ${ssh_opts} root@$host "echo -e '$password\n$password' | passwd nutanix > /dev/null 2>&1"
+        # Get the exit code of the above command.
+        local set_host_nutanix_password_exit=$(
+            ssh ${ssh_opts} root@$host "echo $?"
+        )
+    else
+        log 'info' "Skipping set_host_nutanix_password. Host was not AHV"
+        log 'info' "Ending ${FUNCNAME[0]} function"
+        return
+    fi
+    log 'info' "set_host_nutanix_password_exit:$set_host_nutanix_password_exit"
+    # Check the exit code to determine if the password change succeeded or failed.
+    if ((set_host_nutanix_password_exit == 0)); then
+        local success="Host user 'nutanix' password change on $host SUCCEEDED"
+        echo "$success"
+        log 'info' "$success"
+        log 'info' "Ending ${FUNCNAME[0]} function"
+        return $set_host_nutanix_password_exit
+    else
+        log 'error' "Host user 'nutanix' password change on $host FAILED"
+        exit 13
     fi
 }
 
@@ -194,19 +257,7 @@ function set_ipmi_password () {
     log 'info' "--Beginning ${FUNCNAME[0]} function"
     # Get the OS designation of the host. This is necessary because ipmitool is called differently in ESXi and AHV.
     # OS designation returned should be either "ESXi" or "GNU/Linux".
-    local host_os=$(
-        ssh ${ssh_opts} root@$host 'uname -o'
-    )
-    # Get the exit code of the above command.
-    local host_os_exit=$(
-        ssh ${ssh_opts} root@$host "echo $?"
-    )
-    log 'info' "host_os_exit:$host_os_exit"
-    # If OS equals "GNU/Linux" then set os to "AHV" for simplicity .
-    if [[ $host_os == 'GNU/Linux' ]]; then
-        local host_os='AHV'
-    fi
-    log 'info' "host_os:$host_os"
+    local host_os=$(host_os_discovery)
     if [[ $host_os == 'AHV' ]]; then
         # No output is stored from this SSH session in order to keep it silent.
         # The ipmitool utility is used to set the new password for the 'ADMIN' user which is expected to be user 2.
@@ -261,11 +312,13 @@ do
     case "$1" in
         # If the all parameter is specified, set individual functions to true.
         -a | --all)
-            set_host_password='true'
+            set_host_root_password='true'
             set_cvm_password='true'
             set_prism_element_password='true'
+            set_host_nutanix_password='true'
             set_ipmi_password='true' ;;
-        -h | --host) set_host_password='true' ;;
+        -h | --host) set_host_root_password='true' ;;
+        -u | --nutanix) set_host_nutanix_password='true' ;;
         -c | --cvm) set_cvm_password='true' ;;
         -e | --prism_element) set_prism_element_password='true' ;;
         -i | --ipmi) set_ipmi_password='true' ;;
@@ -294,7 +347,10 @@ if [[ $nodes ]] && [[ $cluster ]]; then
 fi
 
 # Test if --nodes and --cluster are both empty.
-if [[ ( -z $nodes && -z $cluster ) && ( $set_host_password == 'true' || $set_ipmi_password == 'true' ) ]]; then
+if [[ ( -z $nodes && -z $cluster ) &&
+    ( $set_host_root_password == 'true' ||
+    $set_ipmi_password == 'true' ||
+    $set_host_nutanix_password == 'true' ) ]]; then
     log 'error' 'Specify either the --cluster flag or the --nodes flag with a comma seperated list of nodes'
     exit 1
 fi
@@ -307,8 +363,10 @@ if [[ "$password" != "$vpassword" ]]; then
     exit 5
 fi
 
-# A list of remote hosts is only necessary when setting the host and IPMI passwords.
-if [[  $set_host_password == 'true' || $set_ipmi_password == 'true' ]]; then
+# A list of remote hosts is only necessary when setting the host, nutanix, and IPMI passwords.
+if [[  $set_host_root_password == 'true' ||
+    $set_ipmi_password == 'true' ||
+    $set_host_nutanix_password == 'true' ]]; then
     if [[ $cluster == 'true' ]]; then
         # Hostips returns a space seperated list of all hosts in the cluster which is read and stored as an array.
         read -ra hosts <<< "$(hostips)"
@@ -323,10 +381,18 @@ if [[  $set_host_password == 'true' || $set_ipmi_password == 'true' ]]; then
 fi
 
 # Set the 'root' user's password on all specified hosts.
-if [[ $set_host_password == 'true' ]]; then
+if [[ $set_host_root_password == 'true' ]]; then
     for host in "${hosts[@]}"
     do 
-        set_host_password
+        set_host_root_password
+    done
+fi
+
+# Set the 'nutanix' user's password on all specified hosts.
+if [[ $set_host_nutanix_password == 'true' ]]; then
+    for host in "${hosts[@]}"
+    do 
+        set_host_nutanix_password
     done
 fi
 
