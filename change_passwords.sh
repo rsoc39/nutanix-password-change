@@ -45,7 +45,7 @@
 ###############################################-----PARAMETERS-----####################################################                                             
 #   -a/--all:                   Specifies that all passwords will be changed
 #   -h/--host:                  Specifies changing the root user's password on the host
-#   -u/--nutanix:               Specifies changing the root user's password on the host
+#   -u/--nutanix:               Specifies changing the nutanix user's password on an AHV host
 #   -c/--cvm:                   Specifies changing the nutanix user on the CVM
 #   -e/--prism_element:         Specifies changing the admin user in Prism Elemet
 #   -i/--ipmi:                  Specifies changing the ADMIN user in the IPMI
@@ -86,7 +86,7 @@ Takes the password on stdin and will prompt for it if one is not provided
 The propmpt will not echo the password back
 -a/--all:\t\tSpecifies that all passwords will be changed
 -h/--host:\t\tSpecifies changing the root user's password on the host
--u/--nutanix:\t\tSpecifies changing the nutanix user's password on the host
+-u/--nutanix:\t\tSpecifies changing the nutanix user's password on an AHV host
 -c/--cvm:\t\tSpecifies changing the nutanix user's password on the CVM
 -e/--prism_element:\tSpecifies changing the admin user's password in Prism Elemet
 -i/--ipmi:\t\tSpecifies changing the ADMIN user's password in the IPMI
