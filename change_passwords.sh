@@ -342,7 +342,7 @@ done
 
 # Test if --nodes and --cluster have been set at the same time.
 if [[ $nodes ]] && [[ $cluster ]]; then
-    log 'error' 'A node selction cannot be specified at the same time as the --cluster flag'
+    log 'error' 'A node selection cannot be specified at the same time as the --cluster flag'
     exit 1
 fi
 
@@ -351,7 +351,7 @@ if [[ ( -z $nodes && -z $cluster ) &&
     ( $set_host_root_password == 'true' ||
     $set_ipmi_password == 'true' ||
     $set_host_nutanix_password == 'true' ) ]]; then
-    log 'error' 'Specify either the --cluster flag or the --nodes flag with a comma seperated list of nodes'
+    log 'error' 'Specify either the --cluster flag or the --nodes flag with a comma-seperated list of nodes'
     exit 1
 fi
 
@@ -364,14 +364,14 @@ if [[ "$password" != "$vpassword" ]]; then
 fi
 
 # A list of remote hosts is only necessary when setting the host, nutanix, and IPMI passwords.
-if [[  $set_host_root_password == 'true' ||
+if [[ $set_host_root_password == 'true' ||
     $set_ipmi_password == 'true' ||
     $set_host_nutanix_password == 'true' ]]; then
     if [[ $cluster == 'true' ]]; then
-        # Hostips returns a space seperated list of all hosts in the cluster which is read and stored as an array.
+        # Hostips returns a space-seperated list of all hosts in the cluster which is read and stored as an array.
         read -ra hosts <<< "$(hostips)"
     elif [[ $nodes ]]; then
-        # Read in the specified nodes and store them as an array. Prefer comma seperated list but added pipe as well.
+        # Read in the specified nodes and store them as an array. Prefer comma-seperated list but added pipe as well.
         IFS=',|' read -r -a hosts <<< "$nodes"
         log 'info' 'Setting nodes to hosts'
     else
@@ -382,16 +382,14 @@ fi
 
 # Set the 'root' user's password on all specified hosts.
 if [[ $set_host_root_password == 'true' ]]; then
-    for host in "${hosts[@]}"
-    do 
+    for host in "${hosts[@]}"; do
         set_host_root_password
     done
 fi
 
 # Set the 'nutanix' user's password on all specified hosts.
 if [[ $set_host_nutanix_password == 'true' ]]; then
-    for host in "${hosts[@]}"
-    do 
+    for host in "${hosts[@]}"; do 
         set_host_nutanix_password
     done
 fi
@@ -408,8 +406,7 @@ fi
 
 # Set the 'ADMIN' user's password on all specified IPMI instances.
 if [[ $set_ipmi_password == 'true' ]]; then
-    for host in "${hosts[@]}"
-    do
+    for host in "${hosts[@]}"; do
         set_ipmi_password
     done
 fi
