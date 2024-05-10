@@ -59,9 +59,9 @@
 #   11:     CVM user 'nutanix' password change failed
 #   10:     Prism Element user 'admin' password change failed
 #   9:      IPMI user 'ADMIN' password change failed
-#   8:      OS Designation for changing IPMI 'ADMIN' user password was not matched
+#   8:      OS designation for changing IPMI 'ADMIN' user password was not matched
 #   7:      List of hosts could not be determined
-#   5:      The new password and the verification password does not match
+#   5:      The new and verification passwords do not match
 #   1:      Parameters were specified incorrectly
 #######################################################################################################################
 
