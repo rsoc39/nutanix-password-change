@@ -75,23 +75,23 @@ ipmi_user_number='2'
 
 ###############################################-----FUNCTIONS-----#####################################################
 # This function prints the parameters and general info for running this script. It takes no parameters.
-function usage {
-# Gets the file name of the script using parameter expansion instead of calling out to external programs.
-local base=${0##*/}
-# Inserts a backslash to escape the dot for a valid regex when printed below.
-local base=${base//\./\\\.}
-# Print parameters and general info.
-echo -e "\n
+function usage() {
+    # Gets the file name of the script using parameter expansion instead of calling out to external programs.
+    local base=${0##*/}
+    # Inserts a backslash to escape the dot for a valid regex when printed below.
+    local base=${base//\./\\\.}
+    # Print parameters and general info.
+    echo -e "\n
 Takes the password on stdin and will prompt for it if one is not provided
-The propmpt will not echo the password back
+The prompt will not echo the password back
 -a/--all:\t\tSpecifies that all passwords will be changed
 -h/--host:\t\tSpecifies changing the root user's password on the host
 -u/--nutanix:\t\tSpecifies changing the nutanix user's password on an AHV host
 -c/--cvm:\t\tSpecifies changing the nutanix user's password on the CVM
--e/--prism_element:\tSpecifies changing the admin user's password in Prism Elemet
+-e/--prism_element:\tSpecifies changing the admin user's password in Prism Element
 -i/--ipmi:\t\tSpecifies changing the ADMIN user's password in the IPMI
 -r/--cluster:\t\tRun against the entire cluster
--n/--nodes:\t\tComma separated list of virtualization host IPs\n
+-n/--nodes:\t\tComma-separated list of virtualization host IPs\n
 **The logs can be viewed by issuing the below command:
 sudo egrep -o '$base:.+' /home/log/user_info
 
@@ -107,12 +107,12 @@ Must not be among the last 5 passwords
 Must not have more than 2 consecutive occurrences of a character\n"
 }
 
-# This function writes messages to the rsyslog service. As of AOS 5.20 user.info has been exluded from
+# This function writes messages to the rsyslog service. As of AOS 5.20 user.info has been excluded from
 # /home/log/messages in /etc/rsyslog.conf and directed to /home/log/user_info.
 # This function expects two parameters. The first being a string 'info' or 'error' which is used to set the level and
 # as a field in the line being logged. The second is the message being logged. 
 # Error messages will also print to stderr
-function log () {
+function log() {
     # Get's the name of this script running to be used as a field in the log.
     source=${0##*/}
     if [[ $1 == 'info' ]] && [[ $2 ]]; then
@@ -124,7 +124,7 @@ function log () {
     fi
 }
 
-function host_os_discovery () {
+function host_os_discovery() {
     log 'info' "--Beginning ${FUNCNAME[0]} function"
     log 'info' "Host: $host"
     # Get the OS designation of the host. This is necessary because ipmitool is called differently in ESXi and AHV.
@@ -137,7 +137,7 @@ function host_os_discovery () {
         ssh ${ssh_opts} root@$host "echo $?"
     )
     log 'info' "host_os_exit:$host_os_exit"
-    # If OS equals "GNU/Linux" then set os to "AHV" for simplicity .
+    # If OS equals "GNU/Linux" then set OS to "AHV" for simplicity.
     if [[ $host_os == 'GNU/Linux' ]]; then
         local host_os='AHV'
     fi
@@ -146,13 +146,13 @@ function host_os_discovery () {
     echo $host_os
 }
 
-# This function uses the passwd command to change the 'root' user's passwsord on the host stored in the $host variable
-# when it is called. This function expects no parameters.
-function set_host_root_password () {
+# This function uses the passwd command to change the 'root' user's passwsord on the host
+# This function expects no parameters.
+function set_host_root_password() {
     log 'info' "--Beginning ${FUNCNAME[0]} function"
     log 'info' "Host: $host"
     # No output is stored from this SSH session in order to keep it silent.
-    # Echo passes the new password to the passwd command changing the password for the 'root' user.
+    # Echo passes the new password to the passwd command, changing the password for the 'root' user.
     ssh ${ssh_opts} root@$host "echo -e '$password\n$password' | passwd root > /dev/null 2>&1"
     # Get the exit code of the above command.
     local set_host_root_password_exit=$(
@@ -207,7 +207,7 @@ function set_host_nutanix_password () {
 
 # This function uses the passwd command to change the 'nutanix' user's passwsord on the localhost. This will begin a
 # managed process where that password change is propogated to all CVMs in the cluster.
-function set_cvm_password () {
+function set_cvm_password() {
     log 'info' "--Beginning ${FUNCNAME[0]} function"
     # No output is stored from this SSH session in order to keep it silent.
     # Echo passes the new password to the passwd command changing the password for the 'nutanix' user.
@@ -229,7 +229,7 @@ function set_cvm_password () {
 }
 
 # This function uses ncli on the localhost to set the 'admin' user's password in prism element for the cluster.
-function set_prism_element_password () {
+function set_prism_element_password() {
     log 'info' "--Beginning ${FUNCNAME[0]} function"
     # No output is stored from this command in order to keep it silent.
     # ncli is a utility provided by Nutanix for managing Prism Element and is available on CVMs by default.
@@ -253,7 +253,7 @@ function set_prism_element_password () {
 
 # This function uses the ipmitool utility provided by Nutanix to set the 'ADMIN' user's password for the IPMI on the
 # host stored in the $host variable when it is called. This function expects no parameters.
-function set_ipmi_password () {
+function set_ipmi_password() {
     log 'info' "--Beginning ${FUNCNAME[0]} function"
     # Get the OS designation of the host. This is necessary because ipmitool is called differently in ESXi and AHV.
     # OS designation returned should be either "ESXi" or "GNU/Linux".
