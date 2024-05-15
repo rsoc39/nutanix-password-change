@@ -69,7 +69,7 @@
 #######################################################################################################################
 
 ###############################################-----GLOBALS-----#######################################################
-ssh_opts='-o LogLevel=error -o StrictHostKeyChecking=no'
+ssh_opts='-o LogLevel=error -o StrictHostKeyChecking=no -o PasswordAuthentication=yes -o PreferredAuthentications=keyboard-interactive,password -o PubkeyAuthentication=no'
 ipmi_user_number='2'
 #######################################################################################################################
 
